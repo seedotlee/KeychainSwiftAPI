@@ -34,7 +34,7 @@ class KeychainSwiftAPITests: XCTestCase {
         let q = Keychain.Query()
         q.kSecClass = Keychain.Query.KSecClassValue.kSecClassGenericPassword
         q.kSecAttrDescription = "This is a test description"
-        q.kSecAttrGeneric = "Parol".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        q.kSecAttrGeneric = "Parol".data(using: String.Encoding.utf8, allowLossyConversion: false)
         q.kSecAttrAccount = "Try1 account-" + "105"
         q.kSecAttrLabel = "Try1 label"
         q.kSecReturnData = true
@@ -42,9 +42,9 @@ class KeychainSwiftAPITests: XCTestCase {
         q.kSecReturnRef = true
         q.kSecReturnPersistentRef = true
         
-        q.kSecValueData = "Privet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        q.kSecValueData = "Privet".data(using: String.Encoding.utf8, allowLossyConversion: false)
         
-        Keychain.secItemDelete(query: q)
+        let _ = Keychain.secItemDelete(query: q)
         
         let res1 = Keychain.secItemAdd(query: q)
         XCTAssert(res1.status == Keychain.ResultCode.errSecSuccess, "SecItemAdd returned success")
@@ -77,7 +77,7 @@ class KeychainSwiftAPITests: XCTestCase {
         XCTAssert(res1.result != nil, "Retreived result is not nil")
         if let r = res1.result {
             if let resultDic = r as? NSDictionary {
-                XCTAssert(resultDic.objectForKey("acct")!.isEqual(q.kSecAttrAccount!), "Account of the retrieved item matches")
+                XCTAssert((resultDic.object(forKey: "acct")! as AnyObject).isEqual(q.kSecAttrAccount!), "Account of the retrieved item matches")
             }
         }
         
@@ -88,7 +88,7 @@ class KeychainSwiftAPITests: XCTestCase {
         let q = Keychain.Query()
         q.kSecClass = Keychain.Query.KSecClassValue.kSecClassGenericPassword
         q.kSecAttrDescription = "A password from my website"
-        q.kSecAttrGeneric = "VerySecurePassword".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        q.kSecAttrGeneric = "VerySecurePassword".data(using: String.Encoding.utf8, allowLossyConversion: false)
         q.kSecAttrAccount = "admin"
         q.kSecReturnData = true
         q.kSecReturnAttributes = true

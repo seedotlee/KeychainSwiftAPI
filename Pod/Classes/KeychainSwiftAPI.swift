@@ -18,7 +18,7 @@ public func != (left:Keychain.ResultCode, right:Keychain.ResultCode) -> Bool {
     return !(left == right)
 }
 
-public class Keychain
+open class Keychain
 {
     public init() {}
     /**
@@ -41,21 +41,21 @@ public class Keychain
         public func toRaw() -> OSStatus
         {
             switch self {
-            case errSecSuccess:                 return  0
-            case errSecUnimplemented:           return -4
-            case errSecParam:                   return -50
-            case errSecAllocate:                return -108
-            case errSecNotAvailable:            return -25291
-            case errSecAuthFailed:              return -25293
-            case errSecDuplicateItem:           return -25299
-            case errSecItemNotFound:            return -25300
-            case errSecInteractionNotAllowed:   return -25308
-            case errSecDecode:                  return -26275
-            case let other(status):             return status
+            case .errSecSuccess:                 return  0
+            case .errSecUnimplemented:           return -4
+            case .errSecParam:                   return -50
+            case .errSecAllocate:                return -108
+            case .errSecNotAvailable:            return -25291
+            case .errSecAuthFailed:              return -25293
+            case .errSecDuplicateItem:           return -25299
+            case .errSecItemNotFound:            return -25300
+            case .errSecInteractionNotAllowed:   return -25308
+            case .errSecDecode:                  return -26275
+            case let .other(status):             return status
             }
         }
         
-        public static func fromRaw(status : OSStatus) -> ResultCode
+        public static func fromRaw(_ status : OSStatus) -> ResultCode
         {
             switch status {
                 
@@ -76,17 +76,17 @@ public class Keychain
         
         public var description: String { get {
             switch self {
-            case errSecSuccess:                 return "Success"
-            case errSecUnimplemented:           return "Function or operation not implemented."
-            case errSecParam:                   return "One or more parameters passed to the function were not valid."
-            case errSecAllocate:                return "Failed to allocate memory."
-            case errSecNotAvailable:            return "No trust results are available."
-            case errSecAuthFailed:              return "Authorization/Authentication failed."
-            case errSecDuplicateItem:           return "The item already exists."
-            case errSecItemNotFound:            return "The item cannot be found."
-            case errSecInteractionNotAllowed:   return "Interaction with the Security Server is not allowed."
-            case errSecDecode:                  return "Unable to decode the provided data."
-            case let other(status):             return "Error code: \(status)"
+            case .errSecSuccess:                 return "Success"
+            case .errSecUnimplemented:           return "Function or operation not implemented."
+            case .errSecParam:                   return "One or more parameters passed to the function were not valid."
+            case .errSecAllocate:                return "Failed to allocate memory."
+            case .errSecNotAvailable:            return "No trust results are available."
+            case .errSecAuthFailed:              return "Authorization/Authentication failed."
+            case .errSecDuplicateItem:           return "The item already exists."
+            case .errSecItemNotFound:            return "The item cannot be found."
+            case .errSecInteractionNotAllowed:   return "Interaction with the Security Server is not allowed."
+            case .errSecDecode:                  return "Unable to decode the provided data."
+            case let .other(status):             return "Error code: \(status)"
             }
         }}
         
@@ -102,15 +102,15 @@ public class Keychain
     For a description of key-value pairs see the documentation of Keychain API.
     */
 
-    public class Query {
+    open class Query {
         public init(){}
         
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Item class
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public var kSecClass : KSecClassValue?
-        private let kSecClassKey = "class"
+        open var kSecClass : KSecClassValue?
+        fileprivate let kSecClassKey = "class"
         public enum KSecClassValue : String {
             
             case kSecClassGenericPassword   = "genp"
@@ -120,9 +120,9 @@ public class Keychain
             case kSecClassIdentity          = "idnt"
             
         }
-        private func kSecClassAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecClassAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecClass {
-                dic.setObject(v.rawValue, forKey: kSecClassKey)
+                dic.setObject(v.rawValue, forKey: kSecClassKey as NSCopying)
             }
         }
 
@@ -132,35 +132,35 @@ public class Keychain
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         
-        public var kSecReturnData : Bool = false
-        private let kSecReturnDataKey = "r_Data"
-        private func kSecReturnDataAddToDic(dic : NSMutableDictionary) {
+        open var kSecReturnData : Bool = false
+        fileprivate let kSecReturnDataKey = "r_Data"
+        fileprivate func kSecReturnDataAddToDic(_ dic : NSMutableDictionary) {
             if kSecReturnData {
-                dic.setObject(NSNumber(bool: true), forKey: kSecReturnDataKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecReturnDataKey as NSCopying)
             }
         }
 
-        public var kSecReturnAttributes : Bool = false
-        private let kSecReturnAttributesKey = "r_Attributes"
-        private func kSecReturnAttributesAddToDic(dic : NSMutableDictionary) {
+        open var kSecReturnAttributes : Bool = false
+        fileprivate let kSecReturnAttributesKey = "r_Attributes"
+        fileprivate func kSecReturnAttributesAddToDic(_ dic : NSMutableDictionary) {
             if kSecReturnAttributes {
-                dic.setObject(NSNumber(bool: true), forKey: kSecReturnAttributesKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecReturnAttributesKey as NSCopying)
             }
         }
 
-        public var kSecReturnRef : Bool = false
-        private let kSecReturnRefKey = "r_Ref"
-        private func kSecReturnRefAddToDic(dic : NSMutableDictionary) {
+        open var kSecReturnRef : Bool = false
+        fileprivate let kSecReturnRefKey = "r_Ref"
+        fileprivate func kSecReturnRefAddToDic(_ dic : NSMutableDictionary) {
             if kSecReturnRef {
-                dic.setObject(NSNumber(bool: true), forKey: kSecReturnRefKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecReturnRefKey as NSCopying)
             }
         }
 
-        public var kSecReturnPersistentRef : Bool = false
-        private let kSecReturnPersistentRefKey = "r_PersistentRef"
-        private func kSecReturnPersistentRefAddToDic(dic : NSMutableDictionary) {
+        open var kSecReturnPersistentRef : Bool = false
+        fileprivate let kSecReturnPersistentRefKey = "r_PersistentRef"
+        fileprivate func kSecReturnPersistentRefAddToDic(_ dic : NSMutableDictionary) {
             if kSecReturnPersistentRef {
-                dic.setObject(NSNumber(bool: true), forKey: kSecReturnPersistentRefKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecReturnPersistentRefKey as NSCopying)
             }
         }
 
@@ -170,44 +170,44 @@ public class Keychain
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         
-        public var kSecValueData : NSData?
-        private let kSecValueDataKey = "v_Data"
-        private func kSecValueDataAddToDic(dic : NSMutableDictionary) {
+        open var kSecValueData : Data?
+        fileprivate let kSecValueDataKey = "v_Data"
+        fileprivate func kSecValueDataAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecValueData {
-                dic.setObject(v, forKey: kSecValueDataKey)
+                dic.setObject(v, forKey: kSecValueDataKey as NSCopying)
             }
         }
         
         
-        public var kSecValueRef : KSecValueRefValue?
-        private let kSecValueRefKey = "v_Ref"
+        open var kSecValueRef : KSecValueRefValue?
+        fileprivate let kSecValueRefKey = "v_Ref"
         public enum KSecValueRefValue {
-            case Key(SecKeyRef)
-            case Certificate(SecCertificateRef)
-            case Identity(SecIdentityRef)
+            case key(SecKey)
+            case certificate(SecCertificate)
+            case identity(SecIdentity)
         }
-        private func kSecValueRefAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecValueRefAddToDic(_ dic : NSMutableDictionary) {
             if let v = self.kSecValueRef {
                 switch v {
-                case let .Key(val):
-                    dic.setObject(val, forKey: self.kSecValueRefKey)
+                case let .key(val):
+                    dic.setObject(val, forKey: self.kSecValueRefKey as NSCopying)
                     
-                case let .Certificate(val):
-                    dic.setObject(val, forKey: self.kSecValueRefKey)
+                case let .certificate(val):
+                    dic.setObject(val, forKey: self.kSecValueRefKey as NSCopying)
                     
-                case let .Identity(val):
-                    dic.setObject(val, forKey: self.kSecValueRefKey)
+                case let .identity(val):
+                    dic.setObject(val, forKey: self.kSecValueRefKey as NSCopying)
                     
                 }
             }
         }
 
         
-        public var kSecValuePersistentRef : NSData?
-        private let kSecValuePersistentRefKey = "v_PersistentRef"
-        private func kSecValuePersistentRefAddToDic(dic : NSMutableDictionary) {
+        open var kSecValuePersistentRef : Data?
+        fileprivate let kSecValuePersistentRefKey = "v_PersistentRef"
+        fileprivate func kSecValuePersistentRefAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecValuePersistentRef {
-                dic.setObject(v, forKey: kSecValuePersistentRefKey)
+                dic.setObject(v, forKey: kSecValuePersistentRefKey as NSCopying)
             }
         }
         
@@ -215,8 +215,8 @@ public class Keychain
         // Attributes
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
        
-        public  var kSecAttrAccessible : KSecAttrAccessibleValue?
-        private let kSecAttrAccessibleKey = "pdmn"
+        open  var kSecAttrAccessible : KSecAttrAccessibleValue?
+        fileprivate let kSecAttrAccessibleKey = "pdmn"
         public enum KSecAttrAccessibleValue : String {
             case kSecAttrAccessibleWhenUnlocked = "ak"
             case kSecAttrAccessibleAfterFirstUnlock = "ck"
@@ -225,128 +225,128 @@ public class Keychain
             case kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly = "cku"
             case kSecAttrAccessibleAlwaysThisDeviceOnly = "dku"
         }
-        private func kSecAttrAccessibleAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecAttrAccessibleAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrAccessible {
-                dic.setObject(v.rawValue, forKey: kSecAttrAccessibleKey)
+                dic.setObject(v.rawValue, forKey: kSecAttrAccessibleKey as NSCopying)
             }
         }
         
         
-        public   var kSecAttrCreationDate : NSDate?
-        private  let kSecAttrCreationDateKey = "cdat"
-        private func kSecAttrCreationDateAddToDic(dic : NSMutableDictionary) {
+        open   var kSecAttrCreationDate : Date?
+        fileprivate  let kSecAttrCreationDateKey = "cdat"
+        fileprivate func kSecAttrCreationDateAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrCreationDate {
-                dic.setObject(v, forKey: kSecAttrCreationDateKey)
+                dic.setObject(v, forKey: kSecAttrCreationDateKey as NSCopying)
             }
         }
         
-        public   var kSecAttrModificationDate : NSDate?
-        private  let kSecAttrModificationDateKey = "mdat"
-        private func kSecAttrModificationDateAddToDic(dic : NSMutableDictionary) {
+        open   var kSecAttrModificationDate : Date?
+        fileprivate  let kSecAttrModificationDateKey = "mdat"
+        fileprivate func kSecAttrModificationDateAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrModificationDate {
-                dic.setObject(v, forKey: kSecAttrModificationDateKey)
+                dic.setObject(v, forKey: kSecAttrModificationDateKey as NSCopying)
             }
         }
         
-        public var kSecAttrDescription : String?
-        private let kSecAttrDescriptionKey = "desc"
-        private func kSecAttrDescriptionAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrDescription : String?
+        fileprivate let kSecAttrDescriptionKey = "desc"
+        fileprivate func kSecAttrDescriptionAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrDescription {
-                dic.setObject(v, forKey: kSecAttrDescriptionKey)
+                dic.setObject(v, forKey: kSecAttrDescriptionKey as NSCopying)
             }
         }
         
-        public var kSecAttrComment : String?
-        private let kSecAttrCommentKey = "icmt"
-        private func kSecAttrCommentAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrComment : String?
+        fileprivate let kSecAttrCommentKey = "icmt"
+        fileprivate func kSecAttrCommentAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrComment {
-                dic.setObject(v, forKey: kSecAttrCommentKey)
+                dic.setObject(v, forKey: kSecAttrCommentKey as NSCopying)
             }
         }
         
-        public var kSecAttrCreator : UInt32? // NSNumber with unsigned integer
-        private let kSecAttrCreatorKey = "crtr"
-        private func kSecAttrCreatorAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrCreator : UInt32? // NSNumber with unsigned integer
+        fileprivate let kSecAttrCreatorKey = "crtr"
+        fileprivate func kSecAttrCreatorAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrCreator {
-                dic.setObject(NSNumber(unsignedInt: v), forKey: kSecAttrCreatorKey)
+                dic.setObject(NSNumber(value: v as UInt32), forKey: kSecAttrCreatorKey as NSCopying)
             }
         }
         
-        public   var kSecAttrType : UInt32? // NSNumber with unsigned integer
-        private  let kSecAttrTypeKey = "type"
-        private func kSecAttrTypeAddToDic(dic : NSMutableDictionary) {
+        open   var kSecAttrType : UInt32? // NSNumber with unsigned integer
+        fileprivate  let kSecAttrTypeKey = "type"
+        fileprivate func kSecAttrTypeAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrType {
-                dic.setObject(NSNumber(unsignedInt: v), forKey: kSecAttrTypeKey)
+                dic.setObject(NSNumber(value: v as UInt32), forKey: kSecAttrTypeKey as NSCopying)
             }
         }
         
-        public var kSecAttrLabel : String?
-        private let kSecAttrLabelKey = "labl"
-        private func kSecAttrLabelAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrLabel : String?
+        fileprivate let kSecAttrLabelKey = "labl"
+        fileprivate func kSecAttrLabelAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrLabel {
-                dic.setObject(v, forKey: kSecAttrLabelKey)
+                dic.setObject(v, forKey: kSecAttrLabelKey as NSCopying)
             }
         }
         
-        public var kSecAttrIsInvisible : Bool = false // NSNumber with bool
-        private let kSecAttrIsInvisibleKey = "invi"
-        private func kSecAttrIsInvisibleAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrIsInvisible : Bool = false // NSNumber with bool
+        fileprivate let kSecAttrIsInvisibleKey = "invi"
+        fileprivate func kSecAttrIsInvisibleAddToDic(_ dic : NSMutableDictionary) {
             if kSecAttrIsInvisible {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrIsInvisibleKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrIsInvisibleKey as NSCopying)
             }
         }
         
-        public var kSecAttrIsNegative : Bool = false // NSNumber with bool
-        private let kSecAttrIsNegativeKey = "nega"
-        private func kSecAttrIsNegativeAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrIsNegative : Bool = false // NSNumber with bool
+        fileprivate let kSecAttrIsNegativeKey = "nega"
+        fileprivate func kSecAttrIsNegativeAddToDic(_ dic : NSMutableDictionary) {
             if kSecAttrIsNegative {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrIsNegativeKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrIsNegativeKey as NSCopying)
             }
         }
 
         
-        public var kSecAttrAccount : String?
-        private let kSecAttrAccountKey = "acct"
-        private func kSecAttrAccountAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrAccount : String?
+        fileprivate let kSecAttrAccountKey = "acct"
+        fileprivate func kSecAttrAccountAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrAccount {
-                dic.setObject(v, forKey: kSecAttrAccountKey)
+                dic.setObject(v, forKey: kSecAttrAccountKey as NSCopying)
             }
         }
         
-        public var kSecAttrService : String?
-        private let kSecAttrServiceKey = "svce"
-         private func kSecAttrServiceAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrService : String?
+        fileprivate let kSecAttrServiceKey = "svce"
+         fileprivate func kSecAttrServiceAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrService {
-                dic.setObject(v, forKey: kSecAttrServiceKey)
+                dic.setObject(v, forKey: kSecAttrServiceKey as NSCopying)
             }
         }
         
-        public var kSecAttrGeneric : NSData?
-        private let kSecAttrGenericKey = "gena"
-         private func kSecAttrGenericAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrGeneric : Data?
+        fileprivate let kSecAttrGenericKey = "gena"
+         fileprivate func kSecAttrGenericAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrGeneric {
-                dic.setObject(v, forKey: kSecAttrGenericKey)
+                dic.setObject(v, forKey: kSecAttrGenericKey as NSCopying)
             }
         }
         
-        public var kSecAttrSecurityDomain : String?
-        private let kSecAttrSecurityDomainKey = "sdmn"
-         private func kSecAttrSecurityDomainAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrSecurityDomain : String?
+        fileprivate let kSecAttrSecurityDomainKey = "sdmn"
+         fileprivate func kSecAttrSecurityDomainAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrSecurityDomain {
-                dic.setObject(v, forKey: kSecAttrSecurityDomainKey)
+                dic.setObject(v, forKey: kSecAttrSecurityDomainKey as NSCopying)
             }
         }
         
-        public var kSecAttrServer : String?
-        private let kSecAttrServerKey = "srvr"
-         private func kSecAttrServerAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrServer : String?
+        fileprivate let kSecAttrServerKey = "srvr"
+         fileprivate func kSecAttrServerAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrServer {
-                dic.setObject(v, forKey: kSecAttrServerKey)
+                dic.setObject(v, forKey: kSecAttrServerKey as NSCopying)
             }
         }
         
-        public var kSecAttrProtocol : KSecAttrProtocolValue?
-        private let kSecAttrProtocolKey = "ptcl"
+        open var kSecAttrProtocol : KSecAttrProtocolValue?
+        fileprivate let kSecAttrProtocolKey = "ptcl"
         public enum KSecAttrProtocolValue : String {
             case kSecAttrProtocolFTP = "ftp "
             case kSecAttrProtocolFTPAccount = "ftpa"
@@ -380,16 +380,16 @@ public class Keychain
             case kSecAttrProtocolIRCS = "ircs"
             case kSecAttrProtocolPOP3S = "pops"
         }
-        private func kSecAttrProtocolAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecAttrProtocolAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrProtocol {
-                dic.setObject(v.rawValue, forKey: kSecAttrProtocolKey)
+                dic.setObject(v.rawValue, forKey: kSecAttrProtocolKey as NSCopying)
             }
         }
 
         
         
-        public var kSecAttrAuthenticationType : KSecAttrAuthenticationTypeValue?
-        private let kSecAttrAuthenticationTypeKey = "atyp"
+        open var kSecAttrAuthenticationType : KSecAttrAuthenticationTypeValue?
+        fileprivate let kSecAttrAuthenticationTypeKey = "atyp"
         public enum KSecAttrAuthenticationTypeValue : String {
             case kSecAttrAuthenticationTypeNTLM = "ntlm"
             case kSecAttrAuthenticationTypeMSN = "msna"
@@ -400,388 +400,388 @@ public class Keychain
             case kSecAttrAuthenticationTypeHTMLForm = "form"
             case kSecAttrAuthenticationTypeDefault = "dflt"
         }
-        private func kSecAttrAuthenticationTypeAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecAttrAuthenticationTypeAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrAuthenticationType {
-                dic.setObject(v.rawValue, forKey: kSecAttrAuthenticationTypeKey)
+                dic.setObject(v.rawValue, forKey: kSecAttrAuthenticationTypeKey as NSCopying)
             }
         }
 
         
-        public var kSecAttrPort : UInt32? // NSNumber unsigned
-        private let kSecAttrPortKey = "port"
-        private func kSecAttrPortAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrPort : UInt32? // NSNumber unsigned
+        fileprivate let kSecAttrPortKey = "port"
+        fileprivate func kSecAttrPortAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrPort {
-                dic.setObject(NSNumber(unsignedInt: v), forKey: kSecAttrPortKey)
+                dic.setObject(NSNumber(value: v as UInt32), forKey: kSecAttrPortKey as NSCopying)
             }
         }
         
-        public var kSecAttrPath : String?
-        private let kSecAttrPathKey = "path"
-         private func kSecAttrPathAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrPath : String?
+        fileprivate let kSecAttrPathKey = "path"
+         fileprivate func kSecAttrPathAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrPath {
-                dic.setObject(v, forKey: kSecAttrPathKey)
+                dic.setObject(v, forKey: kSecAttrPathKey as NSCopying)
             }
         }
         
-        public var kSecAttrSubject : NSData?
-        private let kSecAttrSubjectKey = "subj"
-         private func kSecAttrSubjectAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrSubject : Data?
+        fileprivate let kSecAttrSubjectKey = "subj"
+         fileprivate func kSecAttrSubjectAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrSubject {
-                dic.setObject(v, forKey: kSecAttrSubjectKey)
+                dic.setObject(v, forKey: kSecAttrSubjectKey as NSCopying)
             }
         }
         
-        public var kSecAttrIssuer : NSData?
-        private let kSecAttrIssuerKey = "issr"
-         private func kSecAttrIssuerAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrIssuer : Data?
+        fileprivate let kSecAttrIssuerKey = "issr"
+         fileprivate func kSecAttrIssuerAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrIssuer {
-                dic.setObject(v, forKey: kSecAttrIssuerKey)
+                dic.setObject(v, forKey: kSecAttrIssuerKey as NSCopying)
             }
         }
         
-        public var kSecAttrSerialNumber : NSData?
-        private let kSecAttrSerialNumberKey = "slnr"
-         private func kSecAttrSerialNumberAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrSerialNumber : Data?
+        fileprivate let kSecAttrSerialNumberKey = "slnr"
+         fileprivate func kSecAttrSerialNumberAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrSerialNumber {
-                dic.setObject(v, forKey: kSecAttrSerialNumberKey)
+                dic.setObject(v, forKey: kSecAttrSerialNumberKey as NSCopying)
             }
         }
         
-        public var kSecAttrSubjectKeyID : NSData?
-        private let kSecAttrSubjectKeyIDKey = "skid"
-         private func kSecAttrSubjectKeyIDAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrSubjectKeyID : Data?
+        fileprivate let kSecAttrSubjectKeyIDKey = "skid"
+         fileprivate func kSecAttrSubjectKeyIDAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrSubjectKeyID {
-                dic.setObject(v, forKey: kSecAttrSubjectKeyIDKey)
+                dic.setObject(v, forKey: kSecAttrSubjectKeyIDKey as NSCopying)
             }
         }
         
-        public var kSecAttrPublicKeyHash : NSData?
-        private let kSecAttrPublicKeyHashKey = "pkhh"
-         private func kSecAttrPublicKeyHashAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrPublicKeyHash : Data?
+        fileprivate let kSecAttrPublicKeyHashKey = "pkhh"
+         fileprivate func kSecAttrPublicKeyHashAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrPublicKeyHash {
-                dic.setObject(v, forKey: kSecAttrPublicKeyHashKey)
+                dic.setObject(v, forKey: kSecAttrPublicKeyHashKey as NSCopying)
             }
         }
         
-        public var kSecAttrCertificateType : KSecAttrCertificateTypeValue? // NSSNumber
-        private let kSecAttrCertificateTypeKey = "ctyp"
+        open var kSecAttrCertificateType : KSecAttrCertificateTypeValue? // NSSNumber
+        fileprivate let kSecAttrCertificateTypeKey = "ctyp"
         public enum KSecAttrCertificateTypeValue {
-            case Standard(CSSM_CERT_TYPE)
-            case Custom(UInt32)
+            case standard(CSSM_CERT_TYPE)
+            case custom(UInt32)
         }
         public enum CSSM_CERT_TYPE : UInt32 { // CSSM_CERT_TYPE
-            case CSSM_CERT_UNKNOWN =					0x00
-            case CSSM_CERT_X_509v1 =					0x01
-            case CSSM_CERT_X_509v2 =					0x02
-            case CSSM_CERT_X_509v3 =					0x03
-            case CSSM_CERT_PGP =						0x04
-            case CSSM_CERT_SPKI =                       0x05
-            case CSSM_CERT_SDSIv1 =                     0x06
-            case CSSM_CERT_Intel =                      0x08
-            case CSSM_CERT_X_509_ATTRIBUTE =			0x09 /* X.509 attribute cert */
-            case CSSM_CERT_X9_ATTRIBUTE =               0x0A /* X9 attribute cert */
-            case CSSM_CERT_TUPLE =                      0x0B
-            case CSSM_CERT_ACL_ENTRY =                  0x0C
-            case CSSM_CERT_MULTIPLE =                   0x7FFE
-            case CSSM_CERT_LAST =                       0x7FFF
+            case cssm_CERT_UNKNOWN =					0x00
+            case cssm_CERT_X_509v1 =					0x01
+            case cssm_CERT_X_509v2 =					0x02
+            case cssm_CERT_X_509v3 =					0x03
+            case cssm_CERT_PGP =						0x04
+            case cssm_CERT_SPKI =                       0x05
+            case cssm_CERT_SDSIv1 =                     0x06
+            case cssm_CERT_Intel =                      0x08
+            case cssm_CERT_X_509_ATTRIBUTE =			0x09 /* X.509 attribute cert */
+            case cssm_CERT_X9_ATTRIBUTE =               0x0A /* X9 attribute cert */
+            case cssm_CERT_TUPLE =                      0x0B
+            case cssm_CERT_ACL_ENTRY =                  0x0C
+            case cssm_CERT_MULTIPLE =                   0x7FFE
+            case cssm_CERT_LAST =                       0x7FFF
             /* Applications wishing to define their own custom certificate
             type should define and publicly document a uint32 value greater
             than the CSSM_CL_CUSTOM_CERT_TYPE */
-            case CSSM_CL_CUSTOM_CERT_TYPE =             0x08000
+            case cssm_CL_CUSTOM_CERT_TYPE =             0x08000
         }
-        private func kSecAttrCertificateTypeAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecAttrCertificateTypeAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrCertificateType {
                 switch v {
-                case let .Standard(val):
-                        dic.setObject(NSNumber(unsignedInt: val.rawValue), forKey: kSecAttrCertificateTypeKey)
-                case let .Custom(val):
-                        dic.setObject(NSNumber(unsignedInt: val), forKey: kSecAttrCertificateTypeKey)
+                case let .standard(val):
+                        dic.setObject(NSNumber(value: val.rawValue as UInt32), forKey: kSecAttrCertificateTypeKey as NSCopying)
+                case let .custom(val):
+                        dic.setObject(NSNumber(value: val as UInt32), forKey: kSecAttrCertificateTypeKey as NSCopying)
                 }
             }
         }
         
-        public var kSecAttrCertificateEncoding : KSecAttrCertificateEncodingValue? // NSNumber
-        private let kSecAttrCertificateEncodingKey = "cenc"
+        open var kSecAttrCertificateEncoding : KSecAttrCertificateEncodingValue? // NSNumber
+        fileprivate let kSecAttrCertificateEncodingKey = "cenc"
         public enum KSecAttrCertificateEncodingValue {
-            case Standard(CSSM_CERT_ENCODING)
-            case Custom(UInt32)
+            case standard(CSSM_CERT_ENCODING)
+            case custom(UInt32)
         }
         public enum CSSM_CERT_ENCODING : UInt32 {
-            case CSSM_CERT_ENCODING_UNKNOWN =		0x00
-            case CSSM_CERT_ENCODING_CUSTOM =		0x01
-            case CSSM_CERT_ENCODING_BER =			0x02
-            case CSSM_CERT_ENCODING_DER =			0x03
-            case CSSM_CERT_ENCODING_NDR =			0x04
-            case CSSM_CERT_ENCODING_SEXPR =			0x05
-            case CSSM_CERT_ENCODING_PGP =			0x06
-            case CSSM_CERT_ENCODING_MULTIPLE =		0x7FFE
-            case CSSM_CERT_ENCODING_LAST =			0x7FFF
+            case cssm_CERT_ENCODING_UNKNOWN =		0x00
+            case cssm_CERT_ENCODING_CUSTOM =		0x01
+            case cssm_CERT_ENCODING_BER =			0x02
+            case cssm_CERT_ENCODING_DER =			0x03
+            case cssm_CERT_ENCODING_NDR =			0x04
+            case cssm_CERT_ENCODING_SEXPR =			0x05
+            case cssm_CERT_ENCODING_PGP =			0x06
+            case cssm_CERT_ENCODING_MULTIPLE =		0x7FFE
+            case cssm_CERT_ENCODING_LAST =			0x7FFF
             /* Applications wishing to define their own custom certificate
             encoding should create a uint32 value greater than the
             CSSM_CL_CUSTOM_CERT_ENCODING */
-            case CSSM_CL_CUSTOM_CERT_ENCODING =		0x8000
+            case cssm_CL_CUSTOM_CERT_ENCODING =		0x8000
         }
-        private func kSecAttrCertificateEncodingAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecAttrCertificateEncodingAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrCertificateEncoding {
                 switch v {
-                case let .Standard(val):
-                    dic.setObject(NSNumber(unsignedInt: val.rawValue), forKey: kSecAttrCertificateEncodingKey)
-                case let .Custom(val):
-                    dic.setObject(NSNumber(unsignedInt: val), forKey: kSecAttrCertificateEncodingKey)
+                case let .standard(val):
+                    dic.setObject(NSNumber(value: val.rawValue as UInt32), forKey: kSecAttrCertificateEncodingKey as NSCopying)
+                case let .custom(val):
+                    dic.setObject(NSNumber(value: val as UInt32), forKey: kSecAttrCertificateEncodingKey as NSCopying)
                 }
             }
         }
 
         
         
-        public var kSecAttrKeyClass : KSecAttrKeyClassValue?
-        private let kSecAttrKeyClassKey = "kcls"
+        open var kSecAttrKeyClass : KSecAttrKeyClassValue?
+        fileprivate let kSecAttrKeyClassKey = "kcls"
         public enum KSecAttrKeyClassValue : String {
             case kSecAttrKeyClassPublic = "0"
             case kSecAttrKeyClassPrivate = "1"
             case kSecAttrKeyClassSymmetric = "2"
         }
-        private func kSecAttrKeyClassAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecAttrKeyClassAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrKeyClass {
-                dic.setObject(v.rawValue, forKey: kSecAttrKeyClassKey)
+                dic.setObject(v.rawValue, forKey: kSecAttrKeyClassKey as NSCopying)
             }
         }
        
         
-        public var kSecAttrApplicationLabel : String?
-        private let kSecAttrApplicationLabelKey = "klbl"
-        private func kSecAttrApplicationLabelAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrApplicationLabel : String?
+        fileprivate let kSecAttrApplicationLabelKey = "klbl"
+        fileprivate func kSecAttrApplicationLabelAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrApplicationLabel {
-                dic.setObject(v, forKey: kSecAttrApplicationLabelKey)
+                dic.setObject(v, forKey: kSecAttrApplicationLabelKey as NSCopying)
             }
         }
         
-        public var kSecAttrIsPermanent : Bool? // NSNumber bool
-        private let kSecAttrIsPermanentKey = "perm"
-        private func kSecAttrIsPermanentAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrIsPermanent : Bool? // NSNumber bool
+        fileprivate let kSecAttrIsPermanentKey = "perm"
+        fileprivate func kSecAttrIsPermanentAddToDic(_ dic : NSMutableDictionary) {
             if (kSecAttrIsPermanent != nil && kSecAttrIsPermanent!) {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrIsPermanentKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrIsPermanentKey as NSCopying)
             }
         }
 
         
-        public var kSecAttrApplicationTag : NSData?
-        private let kSecAttrApplicationTagKey = "atag"
-        private func kSecAttrApplicationTagAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrApplicationTag : Data?
+        fileprivate let kSecAttrApplicationTagKey = "atag"
+        fileprivate func kSecAttrApplicationTagAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrApplicationTag {
-                dic.setObject(v, forKey: kSecAttrApplicationTagKey)
+                dic.setObject(v, forKey: kSecAttrApplicationTagKey as NSCopying)
             }
         }
         
-        public var kSecAttrKeyType : KSecAttrKeyTypeValue? // NSNumber, in practice it is CFString
-        private let kSecAttrKeyTypeKey = "type"
+        open var kSecAttrKeyType : KSecAttrKeyTypeValue? // NSNumber, in practice it is CFString
+        fileprivate let kSecAttrKeyTypeKey = "type"
         public enum KSecAttrKeyTypeValue {
-            case Standard(CSSM_ALGORITHMS)
-            case Custom(UInt32)
+            case standard(CSSM_ALGORITHMS)
+            case custom(UInt32)
         }
         public enum CSSM_ALGORITHMS : UInt32 {
-            case CSSM_ALGID_NONE =					0
-            case CSSM_ALGID_CUSTOM =				1
-            case CSSM_ALGID_DH =					2
-            case CSSM_ALGID_PH =					3
-            case CSSM_ALGID_KEA =					4
-            case CSSM_ALGID_MD2 =					5
-            case CSSM_ALGID_MD4 =					6
-            case CSSM_ALGID_MD5 =					7
-            case CSSM_ALGID_SHA1 =					8
-            case CSSM_ALGID_NHASH =					9
-            case CSSM_ALGID_HAVAL =					10
-            case CSSM_ALGID_RIPEMD =				11
-            case CSSM_ALGID_IBCHASH =				12
-            case CSSM_ALGID_RIPEMAC =				13
-            case CSSM_ALGID_DES =					14
-            case CSSM_ALGID_DESX =					15
-            case CSSM_ALGID_RDES =					16
-            case CSSM_ALGID_3DES_3KEY_EDE =			17
-            case CSSM_ALGID_3DES_2KEY_EDE =			18
-            case CSSM_ALGID_3DES_1KEY_EEE =			19
+            case cssm_ALGID_NONE =					0
+            case cssm_ALGID_CUSTOM =				1
+            case cssm_ALGID_DH =					2
+            case cssm_ALGID_PH =					3
+            case cssm_ALGID_KEA =					4
+            case cssm_ALGID_MD2 =					5
+            case cssm_ALGID_MD4 =					6
+            case cssm_ALGID_MD5 =					7
+            case cssm_ALGID_SHA1 =					8
+            case cssm_ALGID_NHASH =					9
+            case cssm_ALGID_HAVAL =					10
+            case cssm_ALGID_RIPEMD =				11
+            case cssm_ALGID_IBCHASH =				12
+            case cssm_ALGID_RIPEMAC =				13
+            case cssm_ALGID_DES =					14
+            case cssm_ALGID_DESX =					15
+            case cssm_ALGID_RDES =					16
+            case cssm_ALGID_3DES_3KEY_EDE =			17
+            case cssm_ALGID_3DES_2KEY_EDE =			18
+            case cssm_ALGID_3DES_1KEY_EEE =			19
             //case CSSM_ALGID_3DES_3KEY =           	CSSM_ALGID_3DES_3KEY_EDE
-            case CSSM_ALGID_3DES_3KEY_EEE =       	20
+            case cssm_ALGID_3DES_3KEY_EEE =       	20
             //case CSSM_ALGID_3DES_2KEY =           	CSSM_ALGID_3DES_2KEY_EDE
-            case CSSM_ALGID_3DES_2KEY_EEE =       	21
+            case cssm_ALGID_3DES_2KEY_EEE =       	21
             //case CSSM_ALGID_3DES_1KEY =				CSSM_ALGID_3DES_3KEY_EEE
-            case CSSM_ALGID_IDEA =					22
-            case CSSM_ALGID_RC2 =					23
-            case CSSM_ALGID_RC5 =					24
-            case CSSM_ALGID_RC4 =					25
-            case CSSM_ALGID_SEAL =					26
-            case CSSM_ALGID_CAST =					27
-            case CSSM_ALGID_BLOWFISH =				28
-            case CSSM_ALGID_SKIPJACK =				29
-            case CSSM_ALGID_LUCIFER =				30
-            case CSSM_ALGID_MADRYGA =				31
-            case CSSM_ALGID_FEAL =					32
-            case CSSM_ALGID_REDOC =					33
-            case CSSM_ALGID_REDOC3 =				34
-            case CSSM_ALGID_LOKI =					35
-            case CSSM_ALGID_KHUFU =					36
-            case CSSM_ALGID_KHAFRE =				37
-            case CSSM_ALGID_MMB =					38
-            case CSSM_ALGID_GOST =					39
-            case CSSM_ALGID_SAFER =					40
-            case CSSM_ALGID_CRAB =					41
-            case CSSM_ALGID_RSA =					42
-            case CSSM_ALGID_DSA =					43
-            case CSSM_ALGID_MD5WithRSA =			44
-            case CSSM_ALGID_MD2WithRSA =			45
-            case CSSM_ALGID_ElGamal =				46
-            case CSSM_ALGID_MD2Random =				47
-            case CSSM_ALGID_MD5Random =				48
-            case CSSM_ALGID_SHARandom =				49
-            case CSSM_ALGID_DESRandom =				50
-            case CSSM_ALGID_SHA1WithRSA =			51
-            case CSSM_ALGID_CDMF =					52
-            case CSSM_ALGID_CAST3 =					53
-            case CSSM_ALGID_CAST5 =					54
-            case CSSM_ALGID_GenericSecret =			55
-            case CSSM_ALGID_ConcatBaseAndKey =		56
-            case CSSM_ALGID_ConcatKeyAndBase =		57
-            case CSSM_ALGID_ConcatBaseAndData =		58
-            case CSSM_ALGID_ConcatDataAndBase =		59
-            case CSSM_ALGID_XORBaseAndData =		60
-            case CSSM_ALGID_ExtractFromKey =		61
-            case CSSM_ALGID_SSL3PreMasterGen =		62
-            case CSSM_ALGID_SSL3MasterDerive =		63
-            case CSSM_ALGID_SSL3KeyAndMacDerive =	64
-            case CSSM_ALGID_SSL3MD5_MAC =			65
-            case CSSM_ALGID_SSL3SHA1_MAC =			66
-            case CSSM_ALGID_PKCS5_PBKDF1_MD5 =		67
-            case CSSM_ALGID_PKCS5_PBKDF1_MD2 =		68
-            case CSSM_ALGID_PKCS5_PBKDF1_SHA1 =		69
-            case CSSM_ALGID_WrapLynks =				70
-            case CSSM_ALGID_WrapSET_OAEP =			71
-            case CSSM_ALGID_BATON =					72
-            case CSSM_ALGID_ECDSA =					73
-            case CSSM_ALGID_MAYFLY =				74
-            case CSSM_ALGID_JUNIPER =				75
-            case CSSM_ALGID_FASTHASH =				76
-            case CSSM_ALGID_3DES =					77
-            case CSSM_ALGID_SSL3MD5 =				78
-            case CSSM_ALGID_SSL3SHA1 =				79
-            case CSSM_ALGID_FortezzaTimestamp =		80
-            case CSSM_ALGID_SHA1WithDSA =			81
-            case CSSM_ALGID_SHA1WithECDSA =			82
-            case CSSM_ALGID_DSA_BSAFE =				83
-            case CSSM_ALGID_ECDH =					84
-            case CSSM_ALGID_ECMQV =					85
-            case CSSM_ALGID_PKCS12_SHA1_PBE =		86
-            case CSSM_ALGID_ECNRA =					87
-            case CSSM_ALGID_SHA1WithECNRA =			88
-            case CSSM_ALGID_ECES =					89
-            case CSSM_ALGID_ECAES =					90
-            case CSSM_ALGID_SHA1HMAC =				91
-            case CSSM_ALGID_FIPS186Random =			92
-            case CSSM_ALGID_ECC =					93
-            case CSSM_ALGID_MQV =					94
-            case CSSM_ALGID_NRA =					95
-            case CSSM_ALGID_IntelPlatformRandom =	96
-            case CSSM_ALGID_UTC =					97
-            case CSSM_ALGID_HAVAL3 =				98
-            case CSSM_ALGID_HAVAL4 =				99
-            case CSSM_ALGID_HAVAL5 =				100
-            case CSSM_ALGID_TIGER =					101
-            case CSSM_ALGID_MD5HMAC =				102
-            case CSSM_ALGID_PKCS5_PBKDF2 = 			103
-            case CSSM_ALGID_RUNNING_COUNTER =		104
-            case CSSM_ALGID_LAST =					0x7FFFFFFF
+            case cssm_ALGID_IDEA =					22
+            case cssm_ALGID_RC2 =					23
+            case cssm_ALGID_RC5 =					24
+            case cssm_ALGID_RC4 =					25
+            case cssm_ALGID_SEAL =					26
+            case cssm_ALGID_CAST =					27
+            case cssm_ALGID_BLOWFISH =				28
+            case cssm_ALGID_SKIPJACK =				29
+            case cssm_ALGID_LUCIFER =				30
+            case cssm_ALGID_MADRYGA =				31
+            case cssm_ALGID_FEAL =					32
+            case cssm_ALGID_REDOC =					33
+            case cssm_ALGID_REDOC3 =				34
+            case cssm_ALGID_LOKI =					35
+            case cssm_ALGID_KHUFU =					36
+            case cssm_ALGID_KHAFRE =				37
+            case cssm_ALGID_MMB =					38
+            case cssm_ALGID_GOST =					39
+            case cssm_ALGID_SAFER =					40
+            case cssm_ALGID_CRAB =					41
+            case cssm_ALGID_RSA =					42
+            case cssm_ALGID_DSA =					43
+            case cssm_ALGID_MD5WithRSA =			44
+            case cssm_ALGID_MD2WithRSA =			45
+            case cssm_ALGID_ElGamal =				46
+            case cssm_ALGID_MD2Random =				47
+            case cssm_ALGID_MD5Random =				48
+            case cssm_ALGID_SHARandom =				49
+            case cssm_ALGID_DESRandom =				50
+            case cssm_ALGID_SHA1WithRSA =			51
+            case cssm_ALGID_CDMF =					52
+            case cssm_ALGID_CAST3 =					53
+            case cssm_ALGID_CAST5 =					54
+            case cssm_ALGID_GenericSecret =			55
+            case cssm_ALGID_ConcatBaseAndKey =		56
+            case cssm_ALGID_ConcatKeyAndBase =		57
+            case cssm_ALGID_ConcatBaseAndData =		58
+            case cssm_ALGID_ConcatDataAndBase =		59
+            case cssm_ALGID_XORBaseAndData =		60
+            case cssm_ALGID_ExtractFromKey =		61
+            case cssm_ALGID_SSL3PreMasterGen =		62
+            case cssm_ALGID_SSL3MasterDerive =		63
+            case cssm_ALGID_SSL3KeyAndMacDerive =	64
+            case cssm_ALGID_SSL3MD5_MAC =			65
+            case cssm_ALGID_SSL3SHA1_MAC =			66
+            case cssm_ALGID_PKCS5_PBKDF1_MD5 =		67
+            case cssm_ALGID_PKCS5_PBKDF1_MD2 =		68
+            case cssm_ALGID_PKCS5_PBKDF1_SHA1 =		69
+            case cssm_ALGID_WrapLynks =				70
+            case cssm_ALGID_WrapSET_OAEP =			71
+            case cssm_ALGID_BATON =					72
+            case cssm_ALGID_ECDSA =					73
+            case cssm_ALGID_MAYFLY =				74
+            case cssm_ALGID_JUNIPER =				75
+            case cssm_ALGID_FASTHASH =				76
+            case cssm_ALGID_3DES =					77
+            case cssm_ALGID_SSL3MD5 =				78
+            case cssm_ALGID_SSL3SHA1 =				79
+            case cssm_ALGID_FortezzaTimestamp =		80
+            case cssm_ALGID_SHA1WithDSA =			81
+            case cssm_ALGID_SHA1WithECDSA =			82
+            case cssm_ALGID_DSA_BSAFE =				83
+            case cssm_ALGID_ECDH =					84
+            case cssm_ALGID_ECMQV =					85
+            case cssm_ALGID_PKCS12_SHA1_PBE =		86
+            case cssm_ALGID_ECNRA =					87
+            case cssm_ALGID_SHA1WithECNRA =			88
+            case cssm_ALGID_ECES =					89
+            case cssm_ALGID_ECAES =					90
+            case cssm_ALGID_SHA1HMAC =				91
+            case cssm_ALGID_FIPS186Random =			92
+            case cssm_ALGID_ECC =					93
+            case cssm_ALGID_MQV =					94
+            case cssm_ALGID_NRA =					95
+            case cssm_ALGID_IntelPlatformRandom =	96
+            case cssm_ALGID_UTC =					97
+            case cssm_ALGID_HAVAL3 =				98
+            case cssm_ALGID_HAVAL4 =				99
+            case cssm_ALGID_HAVAL5 =				100
+            case cssm_ALGID_TIGER =					101
+            case cssm_ALGID_MD5HMAC =				102
+            case cssm_ALGID_PKCS5_PBKDF2 = 			103
+            case cssm_ALGID_RUNNING_COUNTER =		104
+            case cssm_ALGID_LAST =					0x7FFFFFFF
             /* All algorithms IDs that are vendor specific and not
             part of the CSSM specification should be defined relative
             to CSSM_ALGID_VENDOR_DEFINED. */
-            case CSSM_ALGID_VENDOR_DEFINED =		0x80000000
+            case cssm_ALGID_VENDOR_DEFINED =		0x80000000
         }
-        private func kSecAttrKeyTypeAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecAttrKeyTypeAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrKeyType {
                 switch v {
-                case let .Standard(val):
-                        dic.setObject(NSNumber(unsignedInt: val.rawValue), forKey: kSecAttrKeyTypeKey)
-                case let .Custom(val):
-                        dic.setObject(NSNumber(unsignedInt: val), forKey: kSecAttrKeyTypeKey)
+                case let .standard(val):
+                        dic.setObject(NSNumber(value: val.rawValue as UInt32), forKey: kSecAttrKeyTypeKey as NSCopying)
+                case let .custom(val):
+                        dic.setObject(NSNumber(value: val as UInt32), forKey: kSecAttrKeyTypeKey as NSCopying)
                 }
             }
         }
 
-        public var kSecAttrKeySizeInBits : Int32?  // NSNumber
-        private let kSecAttrKeySizeInBitsKey = "bsiz" 
-        private func kSecAttrKeySizeInBitsAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrKeySizeInBits : Int32?  // NSNumber
+        fileprivate let kSecAttrKeySizeInBitsKey = "bsiz" 
+        fileprivate func kSecAttrKeySizeInBitsAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrKeySizeInBits {
-                dic.setObject(NSNumber(int: v), forKey: kSecAttrKeySizeInBitsKey)
+                dic.setObject(NSNumber(value: v as Int32), forKey: kSecAttrKeySizeInBitsKey as NSCopying)
             }
         }
         
-        public var kSecAttrEffectiveKeySize : Int32? // NSNumber
-        private let kSecAttrEffectiveKeySizeKey = "esiz" 
-        private func kSecAttrEffectiveKeySizeAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrEffectiveKeySize : Int32? // NSNumber
+        fileprivate let kSecAttrEffectiveKeySizeKey = "esiz" 
+        fileprivate func kSecAttrEffectiveKeySizeAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrEffectiveKeySize {
-                dic.setObject(NSNumber(int: v), forKey: kSecAttrEffectiveKeySizeKey)
+                dic.setObject(NSNumber(value: v as Int32), forKey: kSecAttrEffectiveKeySizeKey as NSCopying)
             }
         }
         
-        public var kSecAttrCanEncrypt : Bool? // NSNumber
-        private let kSecAttrCanEncryptKey = "encr" 
-        private func kSecAttrCanEncryptAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrCanEncrypt : Bool? // NSNumber
+        fileprivate let kSecAttrCanEncryptKey = "encr" 
+        fileprivate func kSecAttrCanEncryptAddToDic(_ dic : NSMutableDictionary) {
             if (kSecAttrCanEncrypt != nil && kSecAttrCanEncrypt!) {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrCanEncryptKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrCanEncryptKey as NSCopying)
             }
         }
 
         
-        public var kSecAttrCanDecrypt : Bool? // NSNumber
-        private let kSecAttrCanDecryptKey = "decr" 
-        private func kSecAttrCanDecryptAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrCanDecrypt : Bool? // NSNumber
+        fileprivate let kSecAttrCanDecryptKey = "decr" 
+        fileprivate func kSecAttrCanDecryptAddToDic(_ dic : NSMutableDictionary) {
             if kSecAttrCanDecrypt != nil && kSecAttrCanDecrypt! {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrCanDecryptKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrCanDecryptKey as NSCopying)
             }
         }
         
-        public var kSecAttrCanDerive : Bool? // NSNumber
-        private let kSecAttrCanDeriveKey = "drve" 
-        private func kSecAttrCanDeriveAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrCanDerive : Bool? // NSNumber
+        fileprivate let kSecAttrCanDeriveKey = "drve" 
+        fileprivate func kSecAttrCanDeriveAddToDic(_ dic : NSMutableDictionary) {
             if kSecAttrCanDerive != nil && kSecAttrCanDerive! {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrCanDeriveKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrCanDeriveKey as NSCopying)
             }
         }
 
         
-        public var kSecAttrCanSign : Bool? // NSNumber
-        private let kSecAttrCanSignKey = "sign" 
-        private func kSecAttrCanSignAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrCanSign : Bool? // NSNumber
+        fileprivate let kSecAttrCanSignKey = "sign" 
+        fileprivate func kSecAttrCanSignAddToDic(_ dic : NSMutableDictionary) {
             if (kSecAttrCanSign != nil && kSecAttrCanSign!) {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrCanSignKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrCanSignKey as NSCopying)
             }
         }
 
         
-        public var kSecAttrCanVerify : Bool? // NSNumber
-        private let kSecAttrCanVerifyKey = "vrfy" 
+        open var kSecAttrCanVerify : Bool? // NSNumber
+        fileprivate let kSecAttrCanVerifyKey = "vrfy" 
         
         
-        public var kSecAttrCanWrap : Bool? // NSNumber
-        private let kSecAttrCanWrapKey = "wrap" 
-        private func kSecAttrCanWrapAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrCanWrap : Bool? // NSNumber
+        fileprivate let kSecAttrCanWrapKey = "wrap" 
+        fileprivate func kSecAttrCanWrapAddToDic(_ dic : NSMutableDictionary) {
             if (kSecAttrCanWrap != nil  && kSecAttrCanWrap!) {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrCanWrapKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrCanWrapKey as NSCopying)
             }
         }
 
         
-        public var kSecAttrCanUnwrap : Bool? // NSNumber
-        private let kSecAttrCanUnwrapKey = "unwp" 
-        private func kSecAttrCanUnwrapAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrCanUnwrap : Bool? // NSNumber
+        fileprivate let kSecAttrCanUnwrapKey = "unwp" 
+        fileprivate func kSecAttrCanUnwrapAddToDic(_ dic : NSMutableDictionary) {
             if (kSecAttrCanUnwrap != nil && kSecAttrCanUnwrap!) {
-                dic.setObject(NSNumber(bool: true), forKey: kSecAttrCanUnwrapKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecAttrCanUnwrapKey as NSCopying)
             }
         }
 
-        public var kSecAttrAccessGroup : String?
-        private let kSecAttrAccessGroupKey = "agrp"
-         private func kSecAttrAccessGroupAddToDic(dic : NSMutableDictionary) {
+        open var kSecAttrAccessGroup : String?
+        fileprivate let kSecAttrAccessGroupKey = "agrp"
+         fileprivate func kSecAttrAccessGroupAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecAttrAccessGroup {
-                dic.setObject(v, forKey: kSecAttrAccessGroupKey)
+                dic.setObject(v, forKey: kSecAttrAccessGroupKey as NSCopying)
             }
         }
         
@@ -791,101 +791,101 @@ public class Keychain
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         
-        public var kSecMatchPolicy : SecPolicyRef?
-        private let kSecMatchPolicyKey = "m_Policy"
-         private func kSecMatchPolicyAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchPolicy : SecPolicy?
+        fileprivate let kSecMatchPolicyKey = "m_Policy"
+         fileprivate func kSecMatchPolicyAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecMatchPolicy {
-                dic.setObject(v, forKey: kSecMatchPolicyKey)
+                dic.setObject(v, forKey: kSecMatchPolicyKey as NSCopying)
             }
         }
         
-        public var kSecMatchItemList : NSArray?
-        private let kSecMatchItemListKey = "m_ItemList"
-         private func kSecMatchItemListAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchItemList : NSArray?
+        fileprivate let kSecMatchItemListKey = "m_ItemList"
+         fileprivate func kSecMatchItemListAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecMatchItemList {
-                dic.setObject(v, forKey: kSecMatchItemListKey)
+                dic.setObject(v, forKey: kSecMatchItemListKey as NSCopying)
             }
         }
         
-        public var kSecMatchSearchList : NSArray?
-        private let kSecMatchSearchListKey = "m_SearchList"
-         private func kSecMatchSearchListAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchSearchList : NSArray?
+        fileprivate let kSecMatchSearchListKey = "m_SearchList"
+         fileprivate func kSecMatchSearchListAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecMatchSearchList {
-                dic.setObject(v, forKey: kSecMatchSearchListKey)
+                dic.setObject(v, forKey: kSecMatchSearchListKey as NSCopying)
             }
         }
         
-        public var kSecMatchIssuers : [NSData]?
-        private let kSecMatchIssuersKey = "m_Issuers"
-        private func kSecMatchIssuersAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchIssuers : [Data]?
+        fileprivate let kSecMatchIssuersKey = "m_Issuers"
+        fileprivate func kSecMatchIssuersAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecMatchIssuers {
-                dic.setObject(v, forKey: kSecMatchIssuersKey)
+                dic.setObject(v, forKey: kSecMatchIssuersKey as NSCopying)
             }
         }
         
-        public var kSecMatchEmailAddressIfPresent : String?
-        private let kSecMatchEmailAddressIfPresentKey = "m_EmailAddressIfPresent"
-        private func kSecMatchEmailAddressIfPresentAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchEmailAddressIfPresent : String?
+        fileprivate let kSecMatchEmailAddressIfPresentKey = "m_EmailAddressIfPresent"
+        fileprivate func kSecMatchEmailAddressIfPresentAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecMatchEmailAddressIfPresent {
-                dic.setObject(v, forKey: kSecMatchEmailAddressIfPresentKey)
+                dic.setObject(v, forKey: kSecMatchEmailAddressIfPresentKey as NSCopying)
             }
         }
         
-        public var kSecMatchSubjectContains : String?
-        private let kSecMatchSubjectContainsKey = "m_SubjectContains"
-        private func kSecMatchSubjectContainsAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchSubjectContains : String?
+        fileprivate let kSecMatchSubjectContainsKey = "m_SubjectContains"
+        fileprivate func kSecMatchSubjectContainsAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecMatchSubjectContains {
-                dic.setObject(v, forKey: kSecMatchSubjectContainsKey)
+                dic.setObject(v, forKey: kSecMatchSubjectContainsKey as NSCopying)
             }
         }
         
-        public var kSecMatchCaseInsensitive : Bool = false
-        private let kSecMatchCaseInsensitiveKey = "m_CaseInsensitive"
-        private func kSecMatchCaseInsensitiveAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchCaseInsensitive : Bool = false
+        fileprivate let kSecMatchCaseInsensitiveKey = "m_CaseInsensitive"
+        fileprivate func kSecMatchCaseInsensitiveAddToDic(_ dic : NSMutableDictionary) {
             if kSecMatchCaseInsensitive {
-                dic.setObject(NSNumber(bool: true), forKey: kSecMatchCaseInsensitiveKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecMatchCaseInsensitiveKey as NSCopying)
             }
         }
 
         
-        public var kSecMatchTrustedOnly : Bool = false
-        private let kSecMatchTrustedOnlyKey = "m_TrustedOnly"
-        private func kSecMatchTrustedOnlyAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchTrustedOnly : Bool = false
+        fileprivate let kSecMatchTrustedOnlyKey = "m_TrustedOnly"
+        fileprivate func kSecMatchTrustedOnlyAddToDic(_ dic : NSMutableDictionary) {
             if kSecMatchTrustedOnly {
-                dic.setObject(NSNumber(bool: true), forKey: kSecMatchTrustedOnlyKey)
+                dic.setObject(NSNumber(value: true as Bool), forKey: kSecMatchTrustedOnlyKey as NSCopying)
             }
         }
 
         
-        public var kSecMatchValidOnDate : NSDate?
-        private let kSecMatchValidOnDateKey = "m_ValidOnDate"
-        private func kSecMatchValidOnDateAddToDic(dic : NSMutableDictionary) {
+        open var kSecMatchValidOnDate : Date?
+        fileprivate let kSecMatchValidOnDateKey = "m_ValidOnDate"
+        fileprivate func kSecMatchValidOnDateAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecMatchValidOnDate {
-                dic.setObject(v, forKey: kSecMatchValidOnDateKey)
+                dic.setObject(v, forKey: kSecMatchValidOnDateKey as NSCopying)
             }
         }
         
         
-        public var kSecMatchLimit : KSecMatchLimitValue?
-        private let kSecMatchLimitKey = "m_Limit"
-        private let kSecMatchLimitOneKey = "m_LimitOne"
-        private let kSecMatchLimitAllKey = "m_LimitAll"
+        open var kSecMatchLimit : KSecMatchLimitValue?
+        fileprivate let kSecMatchLimitKey = "m_Limit"
+        fileprivate let kSecMatchLimitOneKey = "m_LimitOne"
+        fileprivate let kSecMatchLimitAllKey = "m_LimitAll"
         public enum KSecMatchLimitValue {
             case kSecMatchLimitOne
             case kSecMatchLimitAll
             case limit(Int)
         }
-        private func kSecMatchLimitAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecMatchLimitAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecMatchLimit {
                 switch v {
                 case .kSecMatchLimitOne:
-                    dic.setObject(kSecMatchLimitOneKey, forKey: kSecMatchLimitKey)
+                    dic.setObject(kSecMatchLimitOneKey, forKey: kSecMatchLimitKey as NSCopying)
                     
                 case .kSecMatchLimitAll:
-                    dic.setObject(kSecMatchLimitAllKey, forKey: kSecMatchLimitKey)
+                    dic.setObject(kSecMatchLimitAllKey, forKey: kSecMatchLimitKey as NSCopying)
                     
                 case let .limit(val):
-                    dic.setObject(NSNumber(long: val), forKey: kSecMatchLimitKey)
+                    dic.setObject(NSNumber(value: val as Int), forKey: kSecMatchLimitKey as NSCopying)
    
                 }
             }
@@ -897,29 +897,29 @@ public class Keychain
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         
-        public var kSecUseItemList : KSecUseItemListValue?
-        private let kSecUseItemListKey = "u_ItemList"
+        open var kSecUseItemList : KSecUseItemListValue?
+        fileprivate let kSecUseItemListKey = "u_ItemList"
         public enum KSecUseItemListValue {
             //case KeychainItems([SecKeychainItemRef])
-            case Keys([SecKeyRef])
-            case Certificates([SecCertificateRef])
-            case Identities([SecIdentityRef])
-            case PersistentItems([NSData])
+            case keys([SecKey])
+            case certificates([SecCertificate])
+            case identities([SecIdentity])
+            case persistentItems([Data])
         }
-        private func kSecUseItemListAddToDic(dic : NSMutableDictionary) {
+        fileprivate func kSecUseItemListAddToDic(_ dic : NSMutableDictionary) {
             if let v = kSecUseItemList {
                 switch v {
-                case let .Keys(val):
-                    dic.setObject(val, forKey: kSecUseItemListKey)
+                case let .keys(val):
+                    dic.setObject(val, forKey: kSecUseItemListKey as NSCopying)
                     
-                case let .Certificates(val):
-                    dic.setObject(val, forKey: kSecUseItemListKey)
+                case let .certificates(val):
+                    dic.setObject(val, forKey: kSecUseItemListKey as NSCopying)
                     
-                case let .Identities(val):
-                    dic.setObject(val, forKey: kSecUseItemListKey)
+                case let .identities(val):
+                    dic.setObject(val, forKey: kSecUseItemListKey as NSCopying)
                 
-                case let .PersistentItems(val):
-                    dic.setObject(val, forKey: kSecUseItemListKey)
+                case let .persistentItems(val):
+                    dic.setObject(val, forKey: kSecUseItemListKey as NSCopying)
                 }
             }
         }
@@ -928,7 +928,7 @@ public class Keychain
         // Helper functions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
      
-        public func toNSDictionary() -> NSDictionary
+        open func toNSDictionary() -> NSDictionary
         {
             let dic = NSMutableDictionary()
             
@@ -1010,11 +1010,11 @@ public class Keychain
     
     */
     
-    public class func secItemAdd(query query : Query) -> (status: ResultCode, result: NSObject?)
+    open class func secItemAdd(query : Query) -> (status: ResultCode, result: NSObject?)
     {
-        let resultAndStatus = CXKeychainHelper.secItemAddCaller(query.toNSDictionary() as [NSObject : AnyObject])
-        let status = ResultCode.fromRaw(resultAndStatus.status)
-        return (status: status, result: resultAndStatus.result)
+        let resultAndStatus = CXKeychainHelper.secItemAddCaller(query.toNSDictionary() as! [AnyHashable: Any])
+        let status = ResultCode.fromRaw((resultAndStatus?.status)!)
+        return (status: status, result: resultAndStatus!.result)
     }
     
     /**
@@ -1024,11 +1024,11 @@ public class Keychain
     - returns: A pair containing the result code and an NSObject that was returned in the result parameter of SecItemCopyMatching call.
     
     */
-    public class func secItemCopyMatching(query query : Query) -> (status: ResultCode, result: NSObject?)
+    open class func secItemCopyMatching(query : Query) -> (status: ResultCode, result: NSObject?)
     {
         let dic : NSDictionary = query.toNSDictionary()
-        let resultAndStatus = CXKeychainHelper.secItemCopyMatchingCaller(dic as [NSObject : AnyObject])
-        return (status: ResultCode.fromRaw(resultAndStatus.status), result: resultAndStatus.result)
+        let resultAndStatus = CXKeychainHelper.secItemCopy(matchingCaller: dic as! [AnyHashable: Any])
+        return (status: ResultCode.fromRaw(resultAndStatus!.status), result: resultAndStatus!.result)
     }
     
     /**
@@ -1039,7 +1039,7 @@ public class Keychain
     
     */
     
-    public class func secItemDelete(query query : Query) -> ResultCode
+    open class func secItemDelete(query : Query) -> ResultCode
     {
         let statusRaw = SecItemDelete(query.toNSDictionary())
         let status = ResultCode.fromRaw(statusRaw)
@@ -1054,7 +1054,7 @@ public class Keychain
     - returns: A result code.
     
     */
-    public class func secItemUpdate(query query : Query, attributesToUpdate : Query) -> ResultCode
+    open class func secItemUpdate(query : Query, attributesToUpdate : Query) -> ResultCode
     {
         let statusRaw = SecItemUpdate(query.toNSDictionary(),attributesToUpdate.toNSDictionary())
         let status = ResultCode.fromRaw(statusRaw)
